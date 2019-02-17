@@ -1,9 +1,27 @@
 import { ApolloServer } from 'apollo-server';
+import jwt from 'jsonwebtoken';
+import { SECRET_KEY } from './constants';
 
-import typeDefs from './schema';
+import typeDefs from './typeDefs';
 import resolvers from './resolvers';
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const getUser = (token) => {
+  if (token) {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (decoded) return decoded;
+  }
+  return null;
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => {
+    const token = req.headers.authorization || '';
+    const user = getUser(token);
+    return { user };
+  },
+});
 
 const PORT = 4000;
 

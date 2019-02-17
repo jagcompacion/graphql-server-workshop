@@ -13,6 +13,13 @@ export default gql`
     products: [Product!]!
   }
 
+  input ProductInput {
+    name: String!
+    description: String
+    quantity: Float
+    price: Float
+  }
+
   type Mutation {
     createProduct(
       name: String!,
@@ -20,5 +27,12 @@ export default gql`
       quantity: Float,
       price: Float,
     ): Product!
+    updateProduct(
+      id: ID!,
+      input: ProductInput!
+    ): Product!
+    deleteProduct(
+      id: ID!
+    ): Boolean!
   }
 `;
